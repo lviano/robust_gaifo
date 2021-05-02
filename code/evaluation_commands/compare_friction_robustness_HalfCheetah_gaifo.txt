@@ -1,0 +1,1 @@
+python analysis/compare_mujoco_robustness.py --env-name HalfCheetah-v2 --alg gaifo --alpha 1.0 0.999 0.99 0.98 0.98 0.97 0.96 0.95 0.9 --mass-muls 0.5 0.75 1.0 1.5 2.0 --seed 3 4 5 --friction --mismatch 1.5
