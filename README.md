@@ -1,10 +1,11 @@
 ***Implementation of robust GAIL under transition dynamics mismatch***
 
-*** Installation ***
+***Installation***
 
 You can replicate the virtual environment we used in our experiments with the file `requirements.txt`
 
-*** Run the experiments ***
+***Run the experiments***
+
 The commands we present here must be executed from the folder `code`.
 
 
