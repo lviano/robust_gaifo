@@ -1,7 +1,8 @@
 import argparse
 import gym
-import pybulletgym
-import gym_simple
+import gym_reach
+#import pybulletgym
+#import gym_simple
 import os
 import sys
 import pickle
@@ -94,6 +95,14 @@ elif args.env_name == "HalfCheetah-v2" or args.env_name == "Walker2d-v2" or args
     else:
         env.env.model.geom_friction[:] *= args.mass_mul
         subfolder = "env" + args.env_name + "friction" + str(args.mass_mul)
+    if not os.path.isdir(assets_dir(subfolder)):
+        os.makedirs(assets_dir(subfolder))
+        os.makedirs(assets_dir(subfolder+"/learned_models"))
+elif args.env_name == "gym_reach:reachNoisy-v0":
+    env = gym.make("gym_reach:reachNoisy-v0", render_mode='rgb_array',
+                   action_noise_mean=0.1,
+                   action_noise_var=args.mass_mul)
+    subfolder = "env" + args.env_name + "noise_var" + str(args.mass_mul)
     if not os.path.isdir(assets_dir(subfolder)):
         os.makedirs(assets_dir(subfolder))
         os.makedirs(assets_dir(subfolder+"/learned_models"))

@@ -160,3 +160,39 @@ elif args.env_name == "Acrobot-v1" or args.env_name == "CartPole-v1":
                         job_name = args.job_name
 
                     os.system(f'sbatch --job-name={job_name} {args.script_name} {experiment_path}')
+elif args.env_name == "gym_reach:reachNoisy-v0":
+    for massL in args.mass_mulL:
+            for seed in args.seed:
+                    for alpha in args.alpha:
+                        folder = f'{args.logs_folder}/gym_reach'
+
+                        path = f'env_name_{args.env_name}/alg_{args.algo}/' \
+                           f'_alpha_{alpha}/lr_{args.learning_rate}/noiseE_{args.noiseE}/exp_type_{args.exp_type}/massE_{args.mass_mulE}' \
+                           f'/massL_{massL}/seed_{seed}'
+
+
+                        if not os.path.isdir(f'{folder}/{path}'):
+                            os.makedirs(f'{folder}/{path}')
+
+                        file = f'gail/algo_gym.py'
+                        command = f'python {file} --env-name {args.env_name} --alg {args.algo} --expert-traj-path {args.expert_traj_path} ' \
+                              f'--num-threads {args.num_threads} --log-interval {args.log_interval} ' \
+                              f'--save-model-interval {args.save_model_interval} ' \
+                              f'--min-batch-size {args.min_batch_size} --max-iter-num {args.max_iter_num} ' \
+                              f'--learning-rate {args.learning_rate} --seed {seed}' \
+                              f' --noiseE {args.noiseE} --alpha {alpha} --mass-mulE {args.mass_mulE} ' \
+                              f'--mass-mulL {massL}  --exp-type {args.exp_type} --reward-type {args.reward_type}'
+
+                        experiment_path = f'{folder}/{path}/command.txt'
+
+                        with open(experiment_path, 'w') as file:
+                            file.write(f'{command}\n')
+
+                        print(command)
+
+                        if not args.job_name:
+                            job_name = path
+                        else:
+                            job_name = args.job_name
+
+                        os.system(f'sbatch --job-name={job_name} {args.script_name} {experiment_path}')

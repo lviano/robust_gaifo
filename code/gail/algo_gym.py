@@ -1,7 +1,8 @@
 import argparse
 import gym
-import pybulletgym
-import gym_simple
+#import pybulletgym
+#import gym_simple
+import gym_reach
 import os
 import sys
 import pickle
@@ -120,6 +121,12 @@ elif args.exp_type == "mismatch":
     elif args.env_name == "HalfCheetah-v2" or args.env_name == "Ant-v2" or args.env_name == "Walker2d-v2" or args.env_name == "Hopper-v2" or args.env_name == "Swimmer-v2" or args.env_name == "InvertedDoublePendulum-v2" or args.env_name == "InvertedPendulum-v2":
         env.env.model.body_mass[:] *= args.mass_mulL
         subfolder = "env" + args.env_name + "massL" + str(args.mass_mulL) + "massE" + str(args.mass_mulE)
+    elif args.env_name == "gym_reach:reachNoisy-v0":
+        env = gym.make("gym_reach:reachNoisy-v0", render_mode='rgb_array',
+                       action_noise_mean=0.1,
+                       action_noise_var=args.mass_mul)
+        subfolder = "env" + args.env_name + "noise_varL" + str(args.mass_mulL) \
+                    + "noise_varE" + str(args.mass_mulE)
     elif args.env_name == "MountainCarContinuous-v0":
         env.env.power *= args.mass_mulL
         subfolder = "env" + args.env_name + "powerL" + str(args.mass_mulL) + "powerE1.0"

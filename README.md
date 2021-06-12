@@ -113,4 +113,34 @@ python analysis/compare_mujoco_robustness.py --env-name <environment-name> --alg
 
 The argument `mismatch` denotes the mismatch used for learning. While the argument `mass-muls` expects the range of masses to evaluate at testing time. 
 
+**Reacher Experiment**
+
+
+```
+python run_ppo.py --env-name gym_reacher:reachNoisy-v0 --max-iter-num 3000 --save-model-interval 500 --mass-mul 0.0
+```
+
+The model is saved in the folder `code/assets/envgym_reacher:reachNoisy-v0noise_var0.0/learned_model/` 
+
+Collect trajectories
+
+```
+python gail/save_expert_traj.py --gym_reacher:reachNoisy-v0 --max-expert-state-num 1000 --model-path assets/envgym_reacher:reachNoisy-v0noise_var0.0/learned_model/gym_reacher:reachNoisy-v0_ppo.p --mass-mul 0.0
+```
+
+The trajectories are saved at `assets/envgym_reacher:reachNoisy-v0noise_var0.0/expert_traj/gym_reacher:reachNoisy-v0_state_only_expert_traj.p`
+
+Finally, run the GAIFO experiments with:
+
+```
+ python run_experiment.py --env-name gym_reacher:reachNoisy-v0 --algo gaifo --learning-rate 1e-4 
+--alpha 1.0 0.999 0.99 0.98 0.97 0.96 0.95 0.9 --num-threads 1 --min-batch-size 3000 --max-iter-num 500 
+--log-interval 1 --save-model-interval 1 --mass-mulL 0.0 0.5 0.75 1.0 1.25 1.5 2.0  --mass-mulE 0.0 
+--expert-traj-path assets/envgym_reacher:reachNoisy-v0noise_var0.0/expert_traj/gym_reacher:reachNoisy-v0_state_only_expert_traj.p 
+--seed 2 3 4 --reward-type positive
+```
+
+If results are bad try `--reward-type negative`.
+
+`--mass-mulL 0.0 0.5 0.75 1.0 1.25 1.5 2.0` this is just an example. Ask Kamal which variances we should try to induce different mismatches.
 
