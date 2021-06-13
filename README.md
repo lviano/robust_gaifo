@@ -144,3 +144,32 @@ If results are bad try `--reward-type negative`.
 
 `--mass-mulL 0.0 0.5 0.75 1.0 1.25 1.5 2.0` this is just an example. Ask Kamal which variances we should try to induce different mismatches.
 
+**Running the experiments without SLURM**
+
+The commands given above assume that you have a SLURM version installed on your cluster to easily handle the parallelization of the different simulations.
+
+You can still run the code without SLURM as follows:
+
+Train a PPO agent with:
+
+```
+python examples/ppo_gym.py --env-name gym_reacher:reachNoisy-v0 --max-iter-num 3000 --save-model-interval 500 --mass-mul 0.0 --num-threads 1
+```
+
+Save the resulting trajectories with:
+
+```
+python gail/save_expert_traj.py --gym_reacher:reachNoisy-v0 --max-expert-state-num 1000 --model-path assets/envgym_reacher:reachNoisy-v0noise_var0.0/learned_model/gym_reacher:reachNoisy-v0_ppo.p --mass-mul 0.0
+```
+
+Finally you can run the robust GAIFO:
+
+```
+ python gail/algo_gym.py --env-name gym_reacher:reachNoisy-v0 --algo gaifo --learning-rate 1e-4 
+--alpha 1.0 --num-threads 1 --min-batch-size 3000 --max-iter-num 500 
+--log-interval 1 --save-model-interval 1 --mass-mulL 0.1  --mass-mulE 0.0 
+--expert-traj-path assets/envgym_reacher:reachNoisy-v0noise_var0.0/expert_traj/gym_reacher:reachNoisy-v0_state_only_expert_traj.p 
+--seed 0 --reward-type positive
+```
+
+
