@@ -123,8 +123,8 @@ elif args.exp_type == "mismatch":
         subfolder = "env" + args.env_name + "massL" + str(args.mass_mulL) + "massE" + str(args.mass_mulE)
     elif args.env_name == "gym_reach:reachNoisy-v0":
         env = gym.make("gym_reach:reachNoisy-v0", render_mode='rgb_array',
-                       action_noise_mean=0.1,
-                       action_noise_var=args.mass_mul)
+                       action_noise_mean=args.mass_mulL,
+                       action_noise_var=args.mass_mulL)
         subfolder = "env" + args.env_name + "noise_varL" + str(args.mass_mulL) \
                     + "noise_varE" + str(args.mass_mulE)
     elif args.env_name == "MountainCarContinuous-v0":

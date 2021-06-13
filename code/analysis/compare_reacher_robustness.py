@@ -69,12 +69,10 @@ if not args.no_compute:
             to_append = []
             to_append_std = []
             for mass_mulL in args.mass_muls:
-                env = gym.make(args.env_name)
+                env = gym.make(args.env_name, render_mode='rgb_array',
+                                action_noise_mean=mass_mul,
+                                action_noise_var=mass_mul)
                 env.seed(0)
-                if not args.friction:
-                    env.env.model.body_mass[:] *= float(mass_mulL)
-                else:
-                    env.env.model.geom_friction[:] *= float(mass_mulL)
                 means_avg = []
                 stds_avg = []
                 _, running_state = pickle.load(

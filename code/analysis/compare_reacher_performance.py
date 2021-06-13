@@ -69,7 +69,9 @@ if not args.no_compute:
             to_append = []
             to_append_std = []
             for mass_mulL in args.mass_muls:
-                env = gym.make(args.env_name)
+                env = gym.make(args.env_name, render_mode='rgb_array',
+                                action_noise_mean=0.0,
+                                action_noise_var=0.0)
                 env.seed(0)
                 """if not args.friction:
                     env.env.model.body_mass[:] *= float(mass_mulL)
