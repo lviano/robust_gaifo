@@ -101,7 +101,8 @@ elif args.env_name == "HalfCheetah-v2" or args.env_name == "Walker2d-v2" or args
 elif args.env_name == "gym_reach:reachNoisy-v0":
     env = gym.make("gym_reach:reachNoisy-v0", render_mode='rgb_array',
                    action_noise_mean=args.mass_mul,
-                   action_noise_var=args.mass_mul)
+                   action_noise_var=args.mass_mul,
+                   headless=True)
     subfolder = "env" + args.env_name + "noise_var" + str(args.mass_mul)
     if not os.path.isdir(assets_dir(subfolder)):
         os.makedirs(assets_dir(subfolder))

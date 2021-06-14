@@ -159,7 +159,7 @@ python examples/ppo_gym.py --env-name gym_reach:reachNoisy-v0 --max-iter-num 300
 Save the resulting trajectories with:
 
 ```
-python gail/save_expert_traj.py --gym_reach:reachNoisy-v0 --max-expert-state-num 1000 --model-path assets/envgym_reach:reachNoisy-v0noise_var0.0/learned_model/gym_reach:reachNoisy-v0_ppo.p --mass-mul 0.0
+python gail/save_expert_traj.py --env-name gym_reach:reachNoisy-v0 --max-expert-state-num 1000 --model-path assets/envgym_reach:reachNoisy-v0noise_var0.0/learned_models/gym_reach:reachNoisy-v0_ppo.p --mass-mul 0.0
 ```
 
 Finally you can run the robust GAIFO:
@@ -171,5 +171,3 @@ Finally you can run the robust GAIFO:
 --expert-traj-path assets/envgym_reach:reachNoisy-v0noise_var0.0/expert_traj/gym_reach:reachNoisy-v0_state_only_expert_traj.p 
 --seed 0 --reward-type positive
 ```
-
-

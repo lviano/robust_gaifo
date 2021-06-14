@@ -83,7 +83,8 @@ args = parser.parse_args()
 
 dtype = torch.float64
 torch.set_default_dtype(dtype)
-device = torch.device('cuda', index=args.gpu_index) if torch.cuda.is_available() else torch.device('cpu')
+# device = torch.device('cuda', index=args.gpu_index) if torch.cuda.is_available() else torch.device('cpu')
+device = torch.device('cpu')
 print(device, "device")
 if torch.cuda.is_available():
     torch.cuda.set_device(args.gpu_index)
@@ -103,7 +104,7 @@ if args.exp_type == "noise":
         subfolder = "env" + args.env_name + "noiseE" + str(args.noiseE)
 
 elif args.exp_type == "mismatch":
-    env = gym.make(args.env_name)
+    # env = gym.make(args.env_name)
 
     if args.env_name == "Acrobot-v1":
         subfolder = "env" + args.env_name + "massL" + str(args.mass_mulL) + "massE" + str(args.mass_mulE) \
@@ -124,7 +125,8 @@ elif args.exp_type == "mismatch":
     elif args.env_name == "gym_reach:reachNoisy-v0":
         env = gym.make("gym_reach:reachNoisy-v0", render_mode='rgb_array',
                        action_noise_mean=args.mass_mulL,
-                       action_noise_var=args.mass_mulL)
+                       action_noise_var=args.mass_mulL,
+                       headless=True)
         subfolder = "env" + args.env_name + "noise_varL" + str(args.mass_mulL) \
                     + "noise_varE" + str(args.mass_mulE)
     elif args.env_name == "MountainCarContinuous-v0":
