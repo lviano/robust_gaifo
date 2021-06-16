@@ -1,16 +1,16 @@
 import argparse
 import gym
-#import pybulletgym
-#import gym_simple
+# import pybulletgym
+# import gym_simple
 import gym_reach
 import os
 import sys
 import pickle
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from itertools import count
 from utils import *
-
 
 parser = argparse.ArgumentParser(description='Save expert trajectory')
 parser.add_argument('--env-name', default="Hopper-v2", metavar='G',
@@ -35,15 +35,15 @@ args = parser.parse_args()
 dtype = torch.float64
 torch.set_default_dtype(dtype)
 if args.env_name == "gridworld-v0":
-    env = gym.make("gridworld-v0", prop = args.noiseE, env_type = args.grid_type)
-    subfolder = "env"+str(args.grid_type)+"noiseE"+str(args.noiseE)
-    if not os.path.isdir(assets_dir(subfolder+"/expert_traj")):
-        os.makedirs(assets_dir(subfolder+"/expert_traj"))
+    env = gym.make("gridworld-v0", prop=args.noiseE, env_type=args.grid_type)
+    subfolder = "env" + str(args.grid_type) + "noiseE" + str(args.noiseE)
+    if not os.path.isdir(assets_dir(subfolder + "/expert_traj")):
+        os.makedirs(assets_dir(subfolder + "/expert_traj"))
 elif args.env_name == "CartPole-v1" or args.env_name == "Acrobot-v1":
     env = gym.make(args.env_name)
-    subfolder = "env"+ args.env_name + "mass" + str(args.mass_mul)+ "len" + str(args.len_mul)
-    if not os.path.isdir(assets_dir(subfolder+"/expert_traj")):
-        os.makedirs(assets_dir(subfolder+"/expert_traj"))
+    subfolder = "env" + args.env_name + "mass" + str(args.mass_mul) + "len" + str(args.len_mul)
+    if not os.path.isdir(assets_dir(subfolder + "/expert_traj")):
+        os.makedirs(assets_dir(subfolder + "/expert_traj"))
     if args.env_name == "Acrobot-v1":
         env.env.LINK_LENGTH_1 *= args.len_mul
         env.env.LINK_LENGTH_2 *= args.len_mul
@@ -56,21 +56,21 @@ elif args.env_name == "CartPole-v1" or args.env_name == "Acrobot-v1":
 elif args.env_name == "HalfCheetah-v2" or args.env_name == "Walker2d-v2" or args.env_name == "Hopper-v2" or args.env_name == "Swimmer-v2" or args.env_name == "InvertedPendulum-v2" or args.env_name == "InvertedDoublePendulum-v2" or args.env_name == "Ant-v2":
     env = gym.make(args.env_name)
     env.env.model.body_mass[:] *= args.mass_mul
-    subfolder = "env"+ args.env_name + "mass" + str(args.mass_mul)
-    if not os.path.isdir(assets_dir(subfolder+"/expert_traj")):
-        os.makedirs(assets_dir(subfolder+"/expert_traj"))
+    subfolder = "env" + args.env_name + "mass" + str(args.mass_mul)
+    if not os.path.isdir(assets_dir(subfolder + "/expert_traj")):
+        os.makedirs(assets_dir(subfolder + "/expert_traj"))
 elif args.env_name == "gym_reach:reachNoisy-v0":
     env = gym.make("gym_reach:reachNoisy-v0", render_mode='rgb_array',
                    action_noise_mean=args.mass_mul,
                    action_noise_var=args.mass_mul)
     subfolder = "env" + args.env_name + "noise_var" + str(args.mass_mul)
-    if not os.path.isdir(assets_dir(subfolder+"/expert_traj")):
+    if not os.path.isdir(assets_dir(subfolder + "/expert_traj")):
         os.makedirs(assets_dir(subfolder + "/expert_traj"))
 else:
     env = gym.make(args.env_name)
-    subfolder = "env" + args.env_name +"unif_noise"+str(args.unif_noise)
-    if not os.path.isdir(assets_dir(subfolder+"/expert_traj")):
-        os.makedirs(assets_dir(subfolder+"/expert_traj"))
+    subfolder = "env" + args.env_name + "unif_noise" + str(args.unif_noise)
+    if not os.path.isdir(assets_dir(subfolder + "/expert_traj")):
+        os.makedirs(assets_dir(subfolder + "/expert_traj"))
 env.seed(args.seed)
 torch.manual_seed(args.seed)
 is_disc_action = len(env.action_space.shape) == 0
@@ -81,8 +81,8 @@ running_state.fix = True
 expert_traj = []
 state_only_expert_traj = []
 
-def main_loop():
 
+def main_loop():
     num_steps = 0
 
     for i_episode in count():
@@ -104,7 +104,7 @@ def main_loop():
             if not is_disc_action:
                 z = np.random.uniform()
                 if args.unif_noise > z:
-                    action = np.random.uniform(low = - 1.0, high = 1.0, size = action.shape)
+                    action = np.random.uniform(low=- 1.0, high=1.0, size=action.shape)
             next_state, reward, done, _ = env.step(action)
             next_state = running_state(next_state)
             reward_episode += reward
