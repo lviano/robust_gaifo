@@ -193,7 +193,7 @@ def main_loop():
         if args.save_model_interval > 0 and (i_iter+1) % args.save_model_interval == 0:
             to_device(torch.device('cpu'), policy_net, value_net)
             pickle.dump((policy_net, value_net, running_state),
-                        open(os.path.join(assets_dir(subfolder), 'learned_models/{}_ppo.p'.format(args.env_name)), 'wb'))
+                        open(os.path.join(assets_dir(subfolder), 'learned_models/{}-t{}_ppo.p'.format(args.env_name, i_iter)), 'wb'))
             to_device(device, policy_net, value_net)
             pickle.dump(np.array(rewards),open(os.path.join(assets_dir(subfolder),'learned_models/reward_{}.p'.format(args.env_name)), 'wb')) 
         """clean up gpu memory"""
