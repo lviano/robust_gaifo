@@ -104,9 +104,9 @@ if args.exp_type == "noise":
         subfolder = "env" + args.env_name + "noiseE" + str(args.noiseE)
 
 elif args.exp_type == "mismatch":
-    # env = gym.make(args.env_name)
 
     if args.env_name == "Acrobot-v1":
+        env = gym.make(args.env_name)
         subfolder = "env" + args.env_name + "massL" + str(args.mass_mulL) + "massE" + str(args.mass_mulE) \
                     + "lenL" + str(args.len_mulL) + "lenE" + str(args.len_mulE)
         env.env.LINK_LENGTH_1 *= args.len_mulL
@@ -114,12 +114,14 @@ elif args.exp_type == "mismatch":
         env.env.LINK_MASS_1 *= args.mass_mulL
         env.env.LINK_MASS_2 *= args.mass_mulL
     elif args.env_name == "CartPole-v1":
+        env = gym.make(args.env_name)
         subfolder = "env" + args.env_name + "massL" + str(args.mass_mulL) + "massE" + str(args.mass_mulE) \
                     + "lenL" + str(args.len_mulL) + "lenE" + str(args.len_mulE)
         env.env.masspole *= args.mass_mulL
         env.env.masscart *= args.mass_mulL
         env.env.length *= args.len_mulL
     elif args.env_name == "HalfCheetah-v2" or args.env_name == "Ant-v2" or args.env_name == "Walker2d-v2" or args.env_name == "Hopper-v2" or args.env_name == "Swimmer-v2" or args.env_name == "InvertedDoublePendulum-v2" or args.env_name == "InvertedPendulum-v2":
+        env = gym.make(args.env_name)
         env.env.model.body_mass[:] *= args.mass_mulL
         subfolder = "env" + args.env_name + "massL" + str(args.mass_mulL) + "massE" + str(args.mass_mulE)
     elif args.env_name == "gym_reach:reachNoisy-v0":
@@ -130,6 +132,7 @@ elif args.exp_type == "mismatch":
         subfolder = "env" + args.env_name + "noise_varL" + str(args.mass_mulL) \
                     + "noise_varE" + str(args.mass_mulE)
     elif args.env_name == "MountainCarContinuous-v0":
+        env = gym.make(args.env_name)
         env.env.power *= args.mass_mulL
         subfolder = "env" + args.env_name + "powerL" + str(args.mass_mulL) + "powerE1.0"
     elif args.env_name == "LunarLanderContinuous-v2":
@@ -343,22 +346,22 @@ def main_loop():
                 i_iter, log['sample_time'], t1 - t0, log['avg_c_reward'], log['avg_reward']))
             rewards.append(log['avg_reward'])
             pickle.dump(rewards, open(
-                os.path.join(assets_dir(subfolder), 'reward_history/{}_{}_{}.p'.format(args.env_name
+                os.path.join(assets_dir(subfolder), 'reward_history/{}_{}_{}_r{}.p'.format(args.env_name
                                                                                        + str(args.seed), args.alg,
-                                                                                       args.alpha)), 'wb'))
+                                                                                       args.alpha, args.reward_type)), 'wb'))
 
         if args.save_model_interval > 0 and (i_iter + 1) % args.save_model_interval == 0:
             to_device(torch.device('cpu'), policy_net, value_net, discrim_net)
             pickle.dump((policy_net, value_net, discrim_net), open(os.path.join(assets_dir(subfolder),
-                                                                                'learned_models/{}_{}_{}.p'.format(
+                                                                                'learned_models/{}_{}_{}_r{}.p'.format(
                                                                                     args.env_name + str(args.seed),
-                                                                                    args.alg, args.alpha)), 'wb'))
+                                                                                    args.alg, args.alpha, args.reward_type)), 'wb'))
             if log['avg_reward'] > best_reward:
                 print(best_reward)
                 pickle.dump((policy_net, value_net, discrim_net),
                             open(os.path.join(assets_dir(subfolder),
-                                              'learned_models/{}_{}_best_{}.p'.format(
-                                                  args.env_name + str(args.seed), args.alg, args.alpha)), 'wb'))
+                                              'learned_models/{}_{}_best_{}_r{}.p'.format(
+                                                  args.env_name + str(args.seed), args.alg, args.alpha, args.reward_type)), 'wb'))
                 best_reward = copy.deepcopy(log['avg_reward'])
 
             to_device(device, policy_net, value_net, discrim_net)
