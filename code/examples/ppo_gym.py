@@ -98,8 +98,9 @@ elif args.env_name == "HalfCheetah-v2" or args.env_name == "Walker2d-v2" or args
     if not os.path.isdir(assets_dir(subfolder)):
         os.makedirs(assets_dir(subfolder))
         os.makedirs(assets_dir(subfolder+"/learned_models"))
-elif args.env_name == "gym_reach:reachNoisy-v0":
-    env = gym.make("gym_reach:reachNoisy-v0", render_mode='rgb_array',
+elif args.env_name.startswith("gym_reach"):
+    print("Got into correct branch")
+    env = gym.make(args.env_name, render_mode='rgb_array',
                    action_noise_mean=args.mass_mul,
                    action_noise_var=args.mass_mul,
                    headless=True)

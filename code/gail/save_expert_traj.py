@@ -59,10 +59,11 @@ elif args.env_name == "HalfCheetah-v2" or args.env_name == "Walker2d-v2" or args
     subfolder = "env" + args.env_name + "mass" + str(args.mass_mul)
     if not os.path.isdir(assets_dir(subfolder + "/expert_traj")):
         os.makedirs(assets_dir(subfolder + "/expert_traj"))
-elif args.env_name == "gym_reach:reachNoisy-v0":
-    env = gym.make("gym_reach:reachNoisy-v0", render_mode='rgb_array',
+elif args.env_name.startswith("gym_reach"):
+    env = gym.make(args.env_name, render_mode='rgb_array',
                    action_noise_mean=args.mass_mul,
-                   action_noise_var=args.mass_mul)
+                   action_noise_var=args.mass_mul,
+                   headless=False)
     subfolder = "env" + args.env_name + "noise_var" + str(args.mass_mul)
     if not os.path.isdir(assets_dir(subfolder + "/expert_traj")):
         os.makedirs(assets_dir(subfolder + "/expert_traj"))
@@ -128,5 +129,7 @@ def main_loop():
 main_loop()
 expert_traj = np.stack(expert_traj)
 state_only_expert_traj = np.stack(state_only_expert_traj)
-pickle.dump((expert_traj, running_state), open(os.path.join(assets_dir(subfolder), 'expert_traj/{}_expert_traj.p'.format(args.env_name)), 'wb'))
-pickle.dump((state_only_expert_traj, running_state), open(os.path.join(assets_dir(subfolder), 'expert_traj/{}_state_only_expert_traj.p'.format(args.env_name)), 'wb'))
+
+model_name = os.path.basename(args.model_path).strip(".p").strip("gym_reach:")
+pickle.dump((expert_traj, running_state), open(os.path.join(assets_dir(subfolder), 'expert_traj/{}_expert_traj.p'.format(model_name)), 'wb'))
+pickle.dump((state_only_expert_traj, running_state), open(os.path.join(assets_dir(subfolder), 'expert_traj/{}_state_only_expert_traj.p'.format(model_name)), 'wb'))

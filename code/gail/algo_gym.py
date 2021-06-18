@@ -1,7 +1,7 @@
 import argparse
 import gym
-#import pybulletgym
-#import gym_simple
+# import pybulletgym
+# import gym_simple
 import gym_reach
 import os
 import sys
@@ -124,8 +124,9 @@ elif args.exp_type == "mismatch":
         env = gym.make(args.env_name)
         env.env.model.body_mass[:] *= args.mass_mulL
         subfolder = "env" + args.env_name + "massL" + str(args.mass_mulL) + "massE" + str(args.mass_mulE)
-    elif args.env_name == "gym_reach:reachNoisy-v0":
-        env = gym.make("gym_reach:reachNoisy-v0", render_mode='rgb_array',
+    elif args.env_name.startswith("gym_reach"):
+        print("Got in the right branch")
+        env = gym.make(args.env_name, render_mode='rgb_array',
                        action_noise_mean=args.mass_mulL,
                        action_noise_var=args.mass_mulL,
                        headless=True)
@@ -153,7 +154,7 @@ state_dim = env.observation_space.shape[0]
 is_disc_action = len(env.action_space.shape) == 0
 
 action_dim = 1 if is_disc_action else env.action_space.shape[0]
-running_state = ZFilter((state_dim,), clip=5)
+# running_state = ZFilter((state_dim,), clip=5)
 # running_reward = ZFilter((1,), demean=False, clip=10)
 
 """seeding"""
@@ -204,7 +205,7 @@ state_only = True if (args.alg == "gaifo" or args.alg == "airl") else False
 
 # load trajectory
 expert_traj, running_state = pickle.load(open(args.expert_traj_path, "rb"))
-if not running_state is None:
+if running_state is not None:
     running_state.fix = True
 else:
     running_state = lambda x: x
@@ -347,15 +348,15 @@ def main_loop():
             rewards.append(log['avg_reward'])
             pickle.dump(rewards, open(
                 os.path.join(assets_dir(subfolder), 'reward_history/{}_{}_{}_r{}.p'.format(args.env_name
-                                                                                       + str(args.seed), args.alg,
-                                                                                       args.alpha, args.reward_type)), 'wb'))
+                                                                                           + str(args.seed), args.alg,
+                                                                                           args.alpha, args.reward_type)), 'wb'))
 
         if args.save_model_interval > 0 and (i_iter + 1) % args.save_model_interval == 0:
             to_device(torch.device('cpu'), policy_net, value_net, discrim_net)
             pickle.dump((policy_net, value_net, discrim_net), open(os.path.join(assets_dir(subfolder),
-                                                                                'learned_models/{}_{}_{}_r{}.p'.format(
+                                                                                'learned_models/{}_{}_{}_r{}_t{}.p'.format(
                                                                                     args.env_name + str(args.seed),
-                                                                                    args.alg, args.alpha, args.reward_type)), 'wb'))
+                                                                                    args.alg, args.alpha, args.reward_type, i_iter)), 'wb'))
             if log['avg_reward'] > best_reward:
                 print(best_reward)
                 pickle.dump((policy_net, value_net, discrim_net),
