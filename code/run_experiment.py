@@ -51,7 +51,50 @@ if not os.path.isfile(args.script_name):
 #SBATCH --mem-per-cpu=1000
 
 ./staskfarm ${{1}}\n''')
-if args.env_name == "gridworld-v0":
+if args.env_name == "GaussianGridworld-v0":
+    for seed in args.seed:
+        for alpha in args.alpha:
+            for noiseL in args.noiseL:
+                folder = f'{args.logs_folder}/gw'
+
+                path = f'env_name_{args.env_name}/' \
+                       f'grid_type_{args.grid_type}/alg{args.algo}/alpha_{alpha}/' \
+                       f'lr_{args.learning_rate}/' \
+                       f'noiseE_{args.noiseE}/' \
+                       f'noiseL_{noiseL}/' \
+                       f'seed_{seed}'
+
+
+                if not os.path.isdir(f'{folder}/{path}'):
+                    os.makedirs(f'{folder}/{path}')
+
+                file = f'gail/algo_gym.py'
+                command = f'python {file} --env-name {args.env_name} --alg {args.algo}' \
+                          f'--grid-type {args.grid_type} ' \
+                          f'--expert-traj-path {args.expert_traj_path} ' \
+                          f'--num-threads {args.num_threads} ' \
+                          f'--log-interval {args.log_interval} ' \
+                          f'--save-model-interval {args.save_model_interval} ' \
+                          f'--max-iter-num {args.max_iter_num} ' \
+                          f'--learning-rate {args.learning_rate} --alpha {alpha} ' \
+                          f'--seed {seed} ' \
+                          f'--noiseE {args.noiseE} ' \
+                          f'--noiseL {noiseL}'
+
+                experiment_path = f'{folder}/{path}/command.txt'
+
+                with open(experiment_path, 'w') as file:
+                    file.write(f'{command}\n')
+
+                print(command)
+
+                if not args.job_name:
+                    job_name = path
+                else:
+                    job_name = args.job_name
+
+                os.system(f'sbatch --job-name={job_name} {args.script_name} {experiment_path}')
+elif args.env_name == "gridworld-v0" :
     for seed in args.seed:
         for alpha in args.alpha:
             for noiseL in args.noiseL:
