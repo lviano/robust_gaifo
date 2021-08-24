@@ -141,7 +141,7 @@ elif args.exp_type == "mismatch":
         env = gym.make(args.env_name)
         subfolder = "env" + args.env_name + "powerL" + str(args.mass_mulL) + "powerE1.0"
     elif args.env_name == "ContinuousGridworld-v0" or args.env_name == "GaussianGridworld-v0":
-        env = gym.make(args.env_name, prop=args.noiseL, env_type=args.grid_type)
+        env = gym.make(args.env_name, prop=args.len_mulL, env_type=1)
         subfolder = "env" + str(args.env_name) + "type" + str(
             args.grid_type) + "noiseE" + str(args.noiseE) + "noiseL" + str(
             args.noiseL)
@@ -178,12 +178,18 @@ else:
         policy_net = Policy(state_dim, env.action_space.shape[0], log_std=args.log_std, hidden_size=(256, 256))
         opponent_net = OpponentPolicy(state_dim, env.action_space.shape[0], log_std=args.log_std,
                                       hidden_size=(256, 256))
+    elif args.env_name == "ContinuousGridworld-v0" or args.env_name == "GaussianGridworld-v0":
+        policy_net = Policy(state_dim, env.action_space.shape[0], log_std=args.log_std, hidden_size=(64))
+        opponent_net = OpponentPolicy(state_dim, env.action_space.shape[0], log_std=args.log_std,
+                                      hidden_size=(64))
 
 """define discriminator"""
 if args.alg == "gaifo" or args.alg == "airl":
     if args.env_name == "HalfCheetah-v2" or args.env_name == "Ant-v2":
         discrim_net = Discriminator(state_dim + state_dim, hidden_size=(400, 300))
-
+    elif args.env_name == "ContinuousGridworld-v0" or args.env_name == "GaussianGridworld-v0":
+        discrim_net = Discriminator(state_dim + state_dim,
+                                    hidden_size=(64))
     else:
         discrim_net = Discriminator(state_dim + state_dim)
 elif args.alg == "gail":
