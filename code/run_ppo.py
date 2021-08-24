@@ -69,7 +69,9 @@ command = f'python {file} --env-name {args.env_name}  --save-model-interval {arg
           f'--log-interval {args.log_interval} --num-threads {args.num_threads} --learning-rate {args.learning_rate} ' \
           f'--max-iter-num {args.max_iter_num} --mass-mul {args.mass_mul} --len-mul {args.len_mul} '
 if args.friction:
-    command += '--friction'
+    command += '--friction '
+if args.env_name == "gridworld-v0" or args.env_name == "ContinuousGridworld-v0" or args.env_name == "GaussianGridworld-v0" :
+    command = f'{command} --noiseE {args.noiseE}'
 
 experiment_path = f'{folder}/{path}/command.txt'
 
