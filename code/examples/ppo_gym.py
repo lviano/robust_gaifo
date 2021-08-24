@@ -1,8 +1,8 @@
 import argparse
 import gym
-import gym_reach
+#import gym_reach
 #import pybulletgym
-#import gym_simple
+import gym_simple
 import os
 import sys
 import pickle
@@ -126,11 +126,15 @@ env.seed(args.seed)
 
 """define actor and critic"""
 if args.model_path is None:
+    value_net = Value(state_dim)
     if is_disc_action:
         policy_net = DiscretePolicy(state_dim, env.action_space.n)
     else:
         policy_net = Policy(state_dim, env.action_space.shape[0], log_std=args.log_std)
-    value_net = Value(state_dim)
+        if args.env_name == "ContinuousGridworld-v0" or args.env_name == "GaussianGridworld-v0":
+            policy_net = Policy(state_dim, env.action_space.shape[0],
+                            log_std=args.log_std, hidden_size=(64))
+            value_net = Value(state_dim,  hidden_size=(64))
 else:
     policy_net, value_net, running_state = pickle.load(open(args.model_path, "rb"))
 policy_net.to(device)
