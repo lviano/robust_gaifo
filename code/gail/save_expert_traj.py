@@ -1,8 +1,8 @@
 import argparse
 import gym
 # import pybulletgym
-# import gym_simple
-import gym_reach
+import gym_simple
+# import gym_reach
 import os
 import sys
 import pickle
@@ -34,9 +34,9 @@ args = parser.parse_args()
 
 dtype = torch.float64
 torch.set_default_dtype(dtype)
-if args.env_name == "gridworld-v0":
-    env = gym.make("gridworld-v0", prop=args.noiseE, env_type=args.grid_type)
-    subfolder = "env" + str(args.grid_type) + "noiseE" + str(args.noiseE)
+if args.env_name == "gridworld-v0" or args.env_name == "ContinuousGridworld-v0" or args.env_name=="GaussianGridworld-v0":
+    env = gym.make(args.env_name, prop=args.noiseE, env_type=args.grid_type)
+    subfolder = "env"+ str(args.env_name) + "type" + str(args.grid_type) + "noiseE" + str(args.noiseE)
     if not os.path.isdir(assets_dir(subfolder + "/expert_traj")):
         os.makedirs(assets_dir(subfolder + "/expert_traj"))
 elif args.env_name == "CartPole-v1" or args.env_name == "Acrobot-v1":

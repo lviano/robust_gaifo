@@ -133,8 +133,8 @@ if args.model_path is None:
         policy_net = Policy(state_dim, env.action_space.shape[0], log_std=args.log_std)
         if args.env_name == "ContinuousGridworld-v0" or args.env_name == "GaussianGridworld-v0":
             policy_net = Policy(state_dim, env.action_space.shape[0],
-                            log_std=args.log_std, hidden_size=(64))
-            value_net = Value(state_dim,  hidden_size=(64))
+                            log_std=args.log_std, hidden_size=(64,))
+            value_net = Value(state_dim,  hidden_size=(64,))
 else:
     policy_net, value_net, running_state = pickle.load(open(args.model_path, "rb"))
 policy_net.to(device)
