@@ -228,3 +228,4 @@ class GaussianGridWorld(TabularEnv):
                     self.terminal_area[1, 1]):
                 reward += 10
         return reward
+
