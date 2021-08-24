@@ -56,7 +56,7 @@ class ContinuousGridWorld(TabularEnv):
         #print(a, "action")
         a[0] = np.max([np.min([0.5, a[0]]), -0.5])
         a[1] = np.max([np.min([0.5, a[1]]), -0.5])
-        self.state += a/10. + self.prop*np.random.uniform(-0.1, 0.1, size=2)
+        self.state += (1-self.prop)*a/10. + self.prop*np.random.uniform(-0.1, 0.1, size=2)
         self.state[0] = np.max([np.min([1,self.state[0]]),-1])
         self.state[1] = np.max([np.min([1, self.state[1]]), -1])
         if (self.terminal_area[0,0] <= self.state[0]  <= self.terminal_area[0,1] and
@@ -157,7 +157,16 @@ class GaussianGridWorld(TabularEnv):
         #print(a, "action")
         a[0] = np.max([np.min([0.5, a[0]]), -0.5])
         a[1] = np.max([np.min([0.5, a[1]]), -0.5])
-        self.state += a/10. + self.prop*np.random.uniform(-0.1, 0.1, size=2)
+        #self.state += (1 - self.prop)*a/10. + self.prop*np.random.uniform(-0.1, 0.1, size=2)
+        prob_adversarial_action = np.random.binomial(n=1, p=self.prop)
+        if prob_adversarial_action:
+            if self.env_type == 1:
+                self.state += np.random.uniform(-0.1,0.1, size=2)
+            elif self.env_type == 2:
+                self.state -= 0.1*self.state/np.linalg.norm(self.state)
+        else:
+            self.state += a/10.
+        #self.state = self.state + a/10. + self.prop*np.random.uniform(-0.1, 0.1, size=2)
         self.state[0] = np.max([np.min([1,self.state[0]]),-1])
         self.state[1] = np.max([np.min([1, self.state[1]]), -1])
         if (self.terminal_area[0,0] <= self.state[0]  <= self.terminal_area[0,1] and
@@ -179,7 +188,7 @@ class GaussianGridWorld(TabularEnv):
                             ), \
                    reward, \
                    self.done, \
-                   None
+                   {}
         return np.array([self.state[0],
                         self.state[1],
                         #self.state[0]*self.state[1],
@@ -192,7 +201,7 @@ class GaussianGridWorld(TabularEnv):
                         ), \
                reward, \
                self.done, \
-               None
+               {}
 
     def reset(self, starting_index = None):
         if self.env_type == 0:
@@ -220,12 +229,11 @@ class GaussianGridWorld(TabularEnv):
             else:
                 reward = -(self.state[0] ** 2 + self.state[1] ** 2) + 3 * \
                      self.state[0] - 5
-        elif self.env_type==1:
-            reward = -(self.state[0] -1)**2 - (self.state[1] + 1)**2 - 8*np.exp(-8*self.state[0]**2-8*self.state[1]**2)
+        elif self.env_type==1 or self.env_type==2:
+            reward = -(self.state[0] -1)**2 - (self.state[1] + 1)**2 - 80*np.exp(-8*self.state[0]**2-8*self.state[1]**2)
             if (self.terminal_area[0, 0] <= self.state[0] <= self.terminal_area[
                 0, 1] and
                     self.terminal_area[1, 0] <= self.state[1] <=
                     self.terminal_area[1, 1]):
                 reward += 10
         return reward
-
