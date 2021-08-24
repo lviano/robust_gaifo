@@ -1,7 +1,7 @@
 import argparse
 import gym
 # import pybulletgym
-# import gym_simple
+import gym_simple
 import gym_reach
 import os
 import sys
@@ -140,6 +140,11 @@ elif args.exp_type == "mismatch":
         gym.envs.box2d.lunar_lander.MAIN_ENGINE_POWER = gym.envs.box2d.lunar_lander.MAIN_ENGINE_POWER * args.mass_mulL
         env = gym.make(args.env_name)
         subfolder = "env" + args.env_name + "powerL" + str(args.mass_mulL) + "powerE1.0"
+    elif args.env_name == "ContinuousGridworld-v0" or args.env_name == "GaussianGridworld-v0":
+        env = gym.make(args.env_name, prop=args.noiseL, env_type=args.grid_type)
+        subfolder = "env" + str(args.env_name) + "type" + str(
+            args.grid_type) + "noiseE" + str(args.noiseE) + "noiseL" + str(
+            args.noiseL)
 elif args.exp_type == "friction":
     env = gym.make(args.env_name)
     env.env.model.geom_friction[:] *= args.mass_mulL
