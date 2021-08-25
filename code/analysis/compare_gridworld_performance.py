@@ -128,7 +128,7 @@ if not args.no_compute:
                     else:
                         running_state = lambda x: x
 
-                    for _ in range(1):
+                    for _ in range(3):
                         mean_reward = evaluate_loop(policy_net, running_state,
                                                     expert_flag, env,
                                                     is_disc_action, args)
@@ -158,8 +158,8 @@ if not args.no_compute:
                 expert_done = True
         base_names = [alg_name for alg_name in ["expert"] if
                       alg_name in args.alg]
-        names = base_names + [alg_name + alpha for alpha in args.alpha for
-                              alg_name in args.alg]
+        names = [alg_name + alpha for alpha in args.alpha for alg_name
+                 in args.alg if alg_name not in ["expert"]] + base_names
 
         if not args.best:
             pickle.dump((to_plot, to_plot_std, names),
@@ -190,11 +190,10 @@ else:
                  args.alg[0] + "best.p",
                  'rb'))
     base_names = [alg_name for alg_name in ["expert"] if alg_name in args.alg]
-    names = base_names + [alg_name + alpha for alpha in args.alpha for alg_name
-                          in args.alg]
-    to_plot = [p for i, p in enumerate(to_plot_load) if names_load[i] in names]
-    to_plot_std = [p for i, p in enumerate(to_plot_std_load) if
-                   names_load[i] in names]
+    names = [alg_name + alpha for alpha in args.alpha for alg_name
+                          in args.alg if alg_name not in ["expert"]] + base_names
+    to_plot = [p for i, p in enumerate(to_plot_load)]# if names_load[i] in names]
+    to_plot_std = [p for i, p in enumerate(to_plot_std_load)] # if names_load[i] in names]
 
 plot.plot_lines_and_ranges(list_to_plot=to_plot,
                            list_sigmas=to_plot_std,
@@ -207,4 +206,4 @@ plot.plot_lines_and_ranges(list_to_plot=to_plot,
                                      0] + "CompareAlphas" + args.env_name + "best" + str(
                                args.best) + str(args.seeds) + "type" + str(args.grid_type) + "noiseE" + str(args.noiseE),
                            x_axis=args.noiseL,
-                           legend=False)
+                           legend=True)
