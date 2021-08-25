@@ -71,7 +71,7 @@ command = f'python {file} --env-name {args.env_name}  --save-model-interval {arg
 if args.friction:
     command += '--friction '
 if args.env_name == "gridworld-v0" or args.env_name == "ContinuousGridworld-v0" or args.env_name == "GaussianGridworld-v0" :
-    command = f'{command} --noiseE {args.noiseE}'
+    command = f'{command} --noiseE {args.noiseE}  --grid-type {args.grid_type}'
 
 experiment_path = f'{folder}/{path}/command.txt'
 

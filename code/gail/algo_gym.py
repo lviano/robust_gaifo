@@ -2,7 +2,7 @@ import argparse
 import gym
 # import pybulletgym
 import gym_simple
-import gym_reach
+# import gym_reach
 import os
 import sys
 import pickle
@@ -179,9 +179,9 @@ else:
         opponent_net = OpponentPolicy(state_dim, env.action_space.shape[0], log_std=args.log_std,
                                       hidden_size=(256, 256))
     elif args.env_name == "ContinuousGridworld-v0" or args.env_name == "GaussianGridworld-v0":
-        policy_net = Policy(state_dim, env.action_space.shape[0], log_std=args.log_std, hidden_size=(64,))
+        policy_net = Policy(state_dim, env.action_space.shape[0], log_std=args.log_std, hidden_size=(128,128))
         opponent_net = OpponentPolicy(state_dim, env.action_space.shape[0], log_std=args.log_std,
-                                      hidden_size=(64,))
+                                      hidden_size=(128,128))
 
 """define discriminator"""
 if args.alg == "gaifo" or args.alg == "airl":
@@ -189,7 +189,7 @@ if args.alg == "gaifo" or args.alg == "airl":
         discrim_net = Discriminator(state_dim + state_dim, hidden_size=(400, 300))
     elif args.env_name == "ContinuousGridworld-v0" or args.env_name == "GaussianGridworld-v0":
         discrim_net = Discriminator(state_dim + state_dim,
-                                    hidden_size=(64,))
+                                    hidden_size=(128,128))
     else:
         discrim_net = Discriminator(state_dim + state_dim)
 elif args.alg == "gail":
@@ -198,7 +198,7 @@ elif args.alg == "gail":
 
 value_net = Value(state_dim)
 if args.env_name == "ContinuousGridworld-v0" or args.env_name == "GaussianGridworld-v0":
-    value_net = Value(state_dim, hidden_size=(64,))
+    value_net = Value(state_dim, hidden_size=(128,128))
 discrim_criterion = nn.BCEWithLogitsLoss()
 to_device(device, policy_net, opponent_net, value_net, discrim_net, discrim_criterion)
 
@@ -367,9 +367,9 @@ def main_loop():
         if args.save_model_interval > 0 and (i_iter + 1) % args.save_model_interval == 0:
             to_device(torch.device('cpu'), policy_net, value_net, discrim_net)
             pickle.dump((policy_net, value_net, discrim_net), open(os.path.join(assets_dir(subfolder),
-                                                                                'learned_models/{}_{}_{}_r{}_t{}.p'.format(
+                                                                                'learned_models/{}_{}_{}_r{}.p'.format(
                                                                                     args.env_name + str(args.seed),
-                                                                                    args.alg, args.alpha, args.reward_type, i_iter)), 'wb'))
+                                                                                    args.alg, args.alpha, args.reward_type)), 'wb'))
             if log['avg_reward'] > best_reward:
                 print(best_reward)
                 pickle.dump((policy_net, value_net, discrim_net),

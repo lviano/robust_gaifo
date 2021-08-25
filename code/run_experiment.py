@@ -69,7 +69,7 @@ if args.env_name == "GaussianGridworld-v0":
                     os.makedirs(f'{folder}/{path}')
 
                 file = f'gail/algo_gym.py'
-                command = f'python {file} --env-name {args.env_name} --alg {args.algo}' \
+                command = f'python {file} --env-name {args.env_name} --alg {args.algo} ' \
                           f'--grid-type {args.grid_type} ' \
                           f'--expert-traj-path {args.expert_traj_path} ' \
                           f'--num-threads {args.num_threads} ' \
