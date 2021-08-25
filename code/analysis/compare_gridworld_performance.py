@@ -128,7 +128,7 @@ if not args.no_compute:
                     else:
                         running_state = lambda x: x
 
-                    for _ in range(10):
+                    for _ in range(1):
                         mean_reward = evaluate_loop(policy_net, running_state,
                                                     expert_flag, env,
                                                     is_disc_action, args)
@@ -205,6 +205,6 @@ plot.plot_lines_and_ranges(list_to_plot=to_plot,
                            folder="../plot/" + subfolder + "/",
                            title=args.alg[
                                      0] + "CompareAlphas" + args.env_name + "best" + str(
-                               args.best) + str(args.seeds) + "type" + args.grid_type + "noiseE" + args.noiseE,
-                           x_axis=args.mass_muls,
+                               args.best) + str(args.seeds) + "type" + str(args.grid_type) + "noiseE" + str(args.noiseE),
+                           x_axis=args.noiseL,
                            legend=False)
