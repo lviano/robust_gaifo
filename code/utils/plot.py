@@ -174,7 +174,7 @@ def plot_lines(list_to_plot, list_name, axis_label, folder, title, x_axis = None
 
 color_list = ["green", "red", "blue", "orange", "purple", "navy", "black", "skyblue", "darksalmon"]
 
-def plot_lines_and_ranges(  list_to_plot, list_sigmas, list_name, axis_label, folder, title, x_axis = None, show = False, legend = True, ylim=None, color_list_custom = None):
+"""def plot_lines_and_ranges(  list_to_plot, list_sigmas, list_name, axis_label, folder, title, x_axis = None, show = False, legend = True, ylim=None, color_list_custom = None):
     
     plt.style.use('seaborn')
     n_iter = list_to_plot[0].size
@@ -212,6 +212,61 @@ def plot_lines_and_ranges(  list_to_plot, list_sigmas, list_name, axis_label, fo
     else:
         plt.savefig('../plot/' + folder+ 'fillBetween'+title+'.png',bbox_inches='tight')
         plt.savefig('../plot/' + folder+ 'fillBetween'+title+'.pdf',bbox_inches='tight')
+"""
+
+
+def plot_lines_and_ranges(list_to_plot, list_sigmas, list_name, axis_label,
+                          folder, title, x_axis=None, show=False, legend=True,
+                          ylim=None, color_list_custom=None, vertical=None):
+    plt.style.use('seaborn')
+    n_iter = list_to_plot[0].size
+    plt.figure(figsize=(6, 6))
+    if vertical is not None:
+        xv = float(vertical)
+        plt.axvline(x=xv, color="black")
+    if color_list_custom:
+        for i, item in enumerate(zip(list_to_plot, list_name, list_sigmas)):
+            if x_axis is None:
+                plt.plot(np.arange(n_iter), item[0], label=item[1],
+                         color=color_list_custom[i], marker="o", markersize=8)
+                plt.fill_between(np.arange(n_iter), item[0] + item[2],
+                                 item[0] - item[2],
+                                 facecolor=color_list_custom[i], alpha=0.1)
+            else:
+                plt.plot(x_axis, item[0], label=item[1],
+                         color=color_list_custom[i], marker="o", markersize=8)
+                plt.fill_between(x_axis, item[0] + item[2], item[0] - item[2],
+                                 facecolor=color_list_custom[i], alpha=0.1)
+    else:
+        for i, item in enumerate(zip(list_to_plot, list_name, list_sigmas)):
+            if x_axis is None:
+                plt.plot(np.arange(n_iter), item[0], label=item[1],
+                         color=color_list[i], marker="o", markersize=8)
+                plt.fill_between(np.arange(n_iter), item[0] + item[2],
+                                 item[0] - item[2], facecolor=color_list[i],
+                                 alpha=0.1)
+            else:
+                plt.plot(x_axis, item[0], label=item[1], color=color_list[i],
+                         marker="o", markersize=8)
+                plt.fill_between(x_axis, item[0] + item[2], item[0] - item[2],
+                                 facecolor=color_list[i], alpha=0.1)
+
+    plt.xlabel(axis_label[0], fontsize=26)
+    plt.ylabel(axis_label[1], fontsize=26)
+    plt.tick_params(labelsize=26)
+    if ylim:
+        plt.ylim(ylim)
+    if legend:
+        plt.legend(fontsize=20, frameon=1, loc='upper center',
+                   bbox_to_anchor=(0.4, -0.2),
+                   fancybox=True, shadow=True, ncol=3)
+    if show:
+        plt.savefig('../../plot/' + folder + title + '.png', bbox_inches='tight')
+        plt.savefig('../../plot/' + folder + title + '.pdf', bbox_inches='tight')
+        plt.show()
+    else:
+        plt.savefig('../../plot/' + folder + title + '.png', bbox_inches='tight')
+        plt.savefig('../../plot/' + folder + title + '.pdf', bbox_inches='tight')
 
 def plot_log_lines_and_ranges(  list_to_plot, list_sigmas, list_name, axis_label, folder, title, x_axis = None, show = False):
     

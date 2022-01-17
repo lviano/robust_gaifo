@@ -198,9 +198,8 @@ else:
 plot.plot_lines_and_ranges(list_to_plot=to_plot,
                            list_sigmas=to_plot_std,
                            list_name=names,
-                           axis_label=["Mass",
-                                       "Total Reward"] if not args.friction else [
-                               "Friction", "Total Reward"],
+                           axis_label=["Learner's Noise",
+                                       "Total Reward"] ,
                            folder="../plot/" + subfolder + "/",
                            title=args.alg[
                                      0] + "CompareAlphas" + args.env_name + "best" + str(
