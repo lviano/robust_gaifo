@@ -3,6 +3,7 @@
 ***Credits***
 
 Our code is based on this open source GAIL implementation: https://github.com/Khrylx/PyTorch-RL
+
 ***Installation***
 
 You can replicate the virtual environment we used in our experiments with the file `requirements.txt`
